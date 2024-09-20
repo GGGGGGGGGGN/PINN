@@ -53,6 +53,7 @@ class NN(object, metaclass=abc.ABCMeta):
             lambda X: 2.0 * (X - lb) / (ub - lb) - 1.0))
 
         # Hidden Layer
+        # dense和linaer功能相同，dense相比更新，在2.x之后的版本在用
         for layer_width in layers[1:-1]:
             self.model.add(Dense(layer_width, activation=tf.nn.tanh,
                                  kernel_initializer='glorot_normal'))
@@ -60,7 +61,7 @@ class NN(object, metaclass=abc.ABCMeta):
         self.model.add(Dense(self.output_dim))
 
         self.optimizer = None
-        self.loss_object = tf.keras.losses.MeanSquaredError()
+        self.loss_object = tf.keras.losses.MeanSquaredError() #用它可以直接计算loss，或者也可自己算loss = tf.reduce_mean(tf.square(y - y_pred))
 
         self.start_time = None
         self.prev_time = None
