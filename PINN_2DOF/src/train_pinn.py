@@ -72,7 +72,8 @@ class ManipulatorInformedNN(PINN):
             dq1_dt = y_pred[:, 2:3]
             dq2_dt = y_pred[:, 3:4]
             dq_dt = tf.stack([dq1_dt, dq2_dt], axis=1)
-
+        
+        # 又用输出值算了一遍，应该是后边算loss？
         dq1_dt_tf = tape.gradient(q1, t)[:, 0]
         dq2_dt_tf = tape.gradient(q2, t)[:, 0]
         dq_dt_tf = tf.stack([dq1_dt_tf, dq2_dt_tf], axis=1)
@@ -116,6 +117,7 @@ if __name__ == "__main__":
     data_path = os.path.join('../resources/data.npz')
     weights_path = os.path.join('../resources/weights')
 
+    # 输入7 输出4 认为前两个输出是关节角，后边两个输出是关节角加速度
     lb, ub, input_dim, output_dim, X_test, Y_test, X_star, Y_star = load_data(data_path)
 
     N_layer = 4
@@ -127,7 +129,7 @@ if __name__ == "__main__":
 
     if LOAD_WEIGHTS:
         pinn.load_weights(weights_path)
-
+  
     # PINN training
     if TRAIN_NET:
         for i in range(N_train):
